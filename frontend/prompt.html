@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Báo cáo lỗi HTML</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f7fb;
+      color: #172033;
+      line-height: 1.6;
+    }
+    .hero {
+      background: linear-gradient(135deg, #182848, #4b6cb7);
+      color: white;
+      padding: 48px 20px 42px;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .hero h1 { margin: 0 0 10px; font-size: clamp(30px, 5vw, 48px); }
+    .hero p { margin: 0; max-width: 800px; color: #e7edff; }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: -24px;
+      position: relative;
+    }
+    .stat {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 30px rgba(30, 45, 80, .10);
+      border: 1px solid #e7eaf2;
+    }
+    .stat strong { display: block; font-size: 30px; }
+    .stat span { color: #65708a; }
+    .intro {
+      background: white;
+      margin: 28px 0 20px;
+      padding: 22px 24px;
+      border-radius: 16px;
+      border: 1px solid #e7eaf2;
+    }
+    .intro strong { color: #b42318; }
+    .issues { display: grid; gap: 18px; padding-bottom: 50px; }
+    .issue-card {
+      background: white;
+      border: 1px solid #e3e7ef;
+      border-left: 5px solid #64748b;
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 5px 20px rgba(20, 30, 50, .06);
+    }
+    .issue-card.syntax { border-left-color: #dc2626; }
+    .issue-card.structure { border-left-color: #d97706; }
+    .issue-card.semantic { border-left-color: #7c3aed; }
+    .issue-card.accessibility { border-left-color: #0891b2; }
+    .issue-card.modern { border-left-color: #2563eb; }
+    .issue-card.security { border-left-color: #be123c; }
+    .issue-card.content { border-left-color: #64748b; }
+    .issue-top {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .number {
+      font-weight: 800; color: #475569;
+    }
+    .badge {
+      padding: 4px 10px; border-radius: 999px;
+      background: #eef2ff; color: #3730a3; font-size: 13px; font-weight: 700;
+    }
+    .line { margin-left: auto; color: #64748b; font-size: 14px; }
+    .issue-card h2 { margin: 0 0 16px; font-size: 19px; }
+    .code-box, .fix-box {
+      border-radius: 10px; overflow: hidden; margin-top: 12px;
+    }
+    .code-box { background: #fff1f2; border: 1px solid #fecdd3; }
+    .fix-box { background: #f0fdf4; border: 1px solid #bbf7d0; }
+    .label {
+      padding: 7px 12px; font-size: 12px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .05em;
+      color: #475569; border-bottom: 1px solid rgba(100,116,139,.18);
+    }
+    pre {
+      margin: 0; padding: 13px 14px; overflow-x: auto;
+      font-family: "Cascadia Code", Consolas, monospace; font-size: 13px;
+      white-space: pre-wrap; word-break: break-word;
+    }
+    footer {
+      text-align: center; color: #64748b; padding: 0 20px 35px;
+      font-size: 13px;
+    }
+    @media (max-width: 700px) {
+      .summary { grid-template-columns: 1fr; margin-top: 20px; }
+      .line { margin-left: 0; width: 100%; }
+      .hero { padding-top: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="container">
+      <h1>Báo cáo lỗi HTML</h1>
+      <p>Phân tích file HTML được cung cấp, tập trung vào lỗi cú pháp, cấu trúc, semantic HTML, accessibility và một số vấn đề về nội dung/bảo trì.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="summary" aria-label="Tóm tắt">
+      <div class="stat"><strong>16</strong><span>vấn đề được ghi nhận</span></div>
+      <div class="stat"><strong>13</strong><span>lỗi chính trong cấu trúc/cú pháp</span></div>
+      <div class="stat"><strong>HTML5</strong><span>nên chuẩn hóa theo HTML hiện đại</span></div>
+    </section>
+
+    <section class="intro">
+      <strong>Lưu ý:</strong> Các mục bên dưới được xác định từ chính file đã cung cấp. Một số mục là lỗi bắt buộc cần sửa để HTML hợp lệ; một số khác là vấn đề semantic, accessibility hoặc placeholder không làm HTML hỏng ngay nhưng nên cải thiện.
+    </section>
+
+    <section class="issues">
+      
+    <article class="issue-card syntax">
+      <div class="issue-top">
+        <span class="number">#1</span>
+        <span class="badge">Cú pháp / DOCTYPE</span>
+        <span class="line">Dòng 1</span>
+      </div>
+      <h2>DOCTYPE không dùng cú pháp chuẩn HTML5.</h2>
+      <div class="code-box"><div class="label">Đoạn hiện tại</div><pre><code>&lt;!DOCTYPE HTML5&gt;</code></pre></div>
+      <div class="fix-box"><div class="label">Đề xuất sửa</div><pre><code>&lt;!DOCTYPE html&gt;</code></pre></div>
+    </article>
+    
+    <article class="issue-card syntax">
+      <div class="issue-top">
+        <span class="number">#2</span>
+        <span class="badge">Cú pháp</span>
+        <span class="line">Dòng 5</span>
+      </div>
+      <h2>Giá trị charset &quot;UTF-88&quot; không hợp lệ. HTML5 dùng UTF-8.</h2>
+      <div class="code-box"><div class="label">Đoạn hiện tại</div><pre><code>&lt;meta charset=&quot;UTF-88&quot;&gt;</code></pre></div>
+      <div class="fix-box"><div class="label">Đề xuất sửa</div><pre><code>&lt;meta charset=&quot;UTF-8&quot;&gt;</code></pre></div>
+    </article>
+    
+    <article class="issue-card syntax">
+      <div class="issue-top">
+        <span class="number">#3</span>
+        <span class="badge">Cú pháp</span>
+        <span class="line">Dòng 6</span>
+      </div>
+      <h2>Thẻ &lt;title&gt; chưa được đóng.</h2>
+      <div class="code-box"><div class="label">Đoạn hiện tại</div><pre><code>&lt;title&gt;News - Blakletterpress Website Template</code></pre></div>
+      <div class="fix-box"><div class="label">Đề xuất sửa</div><pre><code>&lt;/title&gt;</code></pre></div>
+    </article>
+    
+    <article class="issue-card structure">
+      <div class="issue-top">
+        <span class="number">#4</span>
+        <span class="badge">Cấu trúc</span>
+        <span class="line">Dòng 9</span>
+      </div>
+      <h2>Tên thẻ bị gõ sai; trình duyệt không có phần tử HTML chuẩn tên &lt;boby&gt;.</h2>
+      <div class="code-box"><div class="label">Đoạn hiện tại</div><pre><code>&lt;boby&gt;</code></pre></div>
+      <div class="fix-box"><div class="label">Đề xuất sửa</div><pre><code>&lt;body&gt;</code></pre></div>
+    </article>
+    
+    <article class="issue-card syntax">
+      <div class="issue-top">
+        <span class="number">#5</span>
+        <span class="badge">Cú pháp</span>
+        <span class="line">Dòng 24</span>
+      </div>
+      <h2>Thẻ &lt;input&gt; bị thiếu dấu &gt; ở cuối.</h2>
+      <div class="code-box"><div class="label">Đoạn hiện tại</div><pre><code>&lt;input type=&quot;submit&quot; value=&quot;Search&quot; class=&quot;btn&quot;</code></pre></div>
+      <div class="fix-box"><div class="label">Đề xuất sửa</div><pre><code>&lt;input type=&quot;submit&quot; value=&quot;Search&quot; class=&quot;btn&quot;&gt;</code></pre></div>
+    </article>
+    
+    <article class="issue-card structure">
+      <div class="issue-top">
+        <span class="number">#6</span>
+        <span class="badge">Cấu trúc</span>
+        <span class="line">Dòng 27</span>
+      </div>
+      <h2>Có thẻ đóng &lt;/section&gt; nhưng không thấy thẻ mở &lt;section&gt; tương ứng trong cấu trúc đã cung cấp.</h2>
+      <div class="code-box"><div class="label">Đoạn hiện tại</div><pre><code>&lt;/section&gt;</code></pre></div>
+      <div class="fix-box"><div class="label">Đề xuất sửa</div><pre><code>Xóa &lt;/section&gt; hoặc bổ sung &lt;section&gt; đúng vị trí nếu thực sự cần.</code></pre></div>
+    </article>
+    
+    <article class="issue-card syntax">
+      <div class="issue-top">
+        <span class="number">#7</span>
+        <span class="badge">Cú pháp</span>
+        <span class="line">Dòng 33</span>
+      </div>
+      <h2>Thuộc tính class mở bằng dấu nháy kép nhưng lại đóng bằng dấu nháy đơn.</h2>
+      <div class="code-box"><div class="label">Đoạn hiện tại</div><pre><code>&lt;span class=&quot;time&#x27;&gt;01-01-2012&lt;/span&gt;</code></pre></div>
+      <div class="fix-box"><div class="label">Đề xuất sửa</div><pre><code>&lt;span class=&quot;time&quot;&gt;01-01-2012&lt;/span&gt;</code></pre></div>
+    </article>
+    
+    <article class="issue-card semantic">
+      <div class="issue-top">
+        <span class="number">#8</span>
+        <span class="badge">Semantic HTML</span>
+        <span class="line">Dòng 34</span>
+      </div>
+      <h2>HTML chỉ có h1 đến h6; &lt;h7&gt; không phải heading hợp lệ.</h2>
+      <div class="code-box"><div class="label">Đoạn hiện tại</div><pre><code>&lt;h7&gt;NEWS TITLE ONE&lt;/h7&gt;</code></pre></div>
+      <div class="fix-box"><div class="label">Đề xuất sửa</div><pre><code>&lt;h3&gt;NEWS TITLE ONE&lt;/h3&gt;  (hoặc h1–h6 phù hợp với cấu trúc tài liệu)</code></pre></div>
+    </article>
+    
+    <article class="issue-card structure">
+      <div class="issue-top">
+        <span class="number">#9</span>
+        <span class="badge">Cấu trúc danh sách</span>
+        <span class="line">Dòng 48</span>
+      </div>
+      <h2>Danh sách bắt đầu bằng &lt;ul id=&quot;list&quot;&gt; nhưng lại đóng bằng &lt;/ol&gt;.</h2>
+      <div class="code-box"><div class="label">Đoạn hiện tại</div><pre><code>&lt;/ol&gt;</code></pre></div>
+      <div class="fix-box"><div class="label">Đề xuất sửa</div><pre><code>&lt;/ul&gt;</code></pre></div>
+    </article>
+    
+    <article class="issue-card syntax">
+      <div class="issue-top">
+        <span class="number">#10</span>
+        <span class="badge">Cú pháp</span>
+        <span class="line">Dòng 53</span>
+      </div>
+      <h2>Thẻ &lt;a&gt; chưa được đóng trước &lt;/li&gt;.</h2>
+      <div class="code-box"><div class="label">Đoạn hiện tại</div><pre><code>&lt;a href=&quot;news.html&quot; class=&quot;more&quot;&gt;Read more &gt;&gt;</code></pre></div>
+      <div class="fix-box"><div class="label">Đề xuất sửa</div><pre><code>&lt;a href=&quot;news.html&quot; class=&quot;more&quot;&gt;Read more &gt;&gt;&lt;/a&gt;</code></pre></div>
+    </article>
+    
+    <article class="issue-card structure">
+      <div class="issue-top">
+        <span class="number">#11</span>
+        <span class="badge">Cấu trúc</span>
+        <span class="line">Dòng 107</span>
+      </div>
+      <h2>Không sai cú pháp, nhưng thứ bậc heading cần được xem xét theo cấu trúc nội dung; h5 xuất hiện khá sâu trong khi không thấy ngữ cảnh heading h1–h4 tương ứng trong phần này.</h2>
+      <div class="code-box"><div class="label">Đoạn hiện tại</div><pre><code>&lt;h5&gt;Title Sample One&lt;/h5&gt;</code></pre></div>
+      <div class="fix-box"><div class="label">Đề xuất sửa</div><pre><code>Chọn cấp heading theo cấu trúc nội dung thực tế, không chỉ theo kích thước hiển thị.</code></pre></div>
+    </article>
+    
+    <article class="issue-card content">
+      <div class="issue-top">
+        <span class="number">#12</span>
+        <span class="badge">Nội dung</span>
+        <span class="line">Dòng 109</span>
+      </div>
+      <h2>Đây là nội dung placeholder, không phải lỗi HTML nhưng cần thay bằng nội dung thật khi hoàn thiện trang.</h2>
+      <div class="code-box"><div class="label">Đoạn hiện tại</div><pre><code>Lorem ipsum dolor sit amet...</code></pre></div>
+      <div class="fix-box"><div class="label">Đề xuất sửa</div><pre><code>Thay bằng nội dung thực tế.</code></pre></div>
+    </article>
+    
+    <article class="issue-card content">
+      <div class="issue-top">
+        <span class="number">#13</span>
+        <span class="badge">Nội dung</span>
+        <span class="line">Dòng 155</span>
+      </div>
+      <h2>Có nội dung mẫu/placeholder và cách viết copyright không nhất quán.</h2>
+      <div class="code-box"><div class="label">Đoạn hiện tại</div><pre><code>© Copyright © 2011.Company name all rights reserved</code></pre></div>
+      <div class="fix-box"><div class="label">Đề xuất sửa</div><pre><code>Thay bằng tên chủ sở hữu và thông tin bản quyền thực tế.</code></pre></div>
+    </article>
+    
+    <article class="issue-card accessibility">
+      <div class="issue-top">
+        <span class="number">#14</span>
+        <span class="badge">Accessibility / HTML</span>
+        <span class="line">Dòng 19</span>
+      </div>
+      <h2>Thẻ &lt;img&gt; thiếu thuộc tính alt.</h2>
+      <div class="code-box"><div class="label">Đoạn hiện tại</div><pre><code>&lt;img src=&quot;images/logo.png&quot;&gt;</code></pre></div>
+      <div class="fix-box"><div class="label">Đề xuất sửa</div><pre><code>&lt;img src=&quot;images/logo.png&quot; alt=&quot;Logo&quot;&gt;</code></pre></div>
+    </article>
+    
+    <article class="issue-card modern">
+      <div class="issue-top">
+        <span class="number">#15</span>
+        <span class="badge">HTML hiện đại</span>
+        <span class="line">Dòng 23</span>
+      </div>
+      <h2>Inline JavaScript kiểu cũ làm HTML khó bảo trì; có thể thay bằng JavaScript riêng và addEventListener.</h2>
+      <div class="code-box"><div class="label">Đoạn hiện tại</div><pre><code>onBlur=&quot;javascript:...&quot; / onFocus=&quot;javascript:...&quot;</code></pre></div>
+      <div class="fix-box"><div class="label">Đề xuất sửa</div><pre><code>Đưa logic focus/blur vào file JS hoặc script riêng.</code></pre></div>
+    </article>
+    
+    <article class="issue-card security">
+      <div class="issue-top">
+        <span class="number">#16</span>
+        <span class="badge">Security / HTML</span>
+        <span class="line">Dòng 99</span>
+      </div>
+      <h2>Liên kết mở tab mới nên cân nhắc thêm rel=&quot;noopener noreferrer&quot; để tránh liên kết tabnabbing.</h2>
+      <div class="code-box"><div class="label">Đoạn hiện tại</div><pre><code>target=&quot;_blank&quot;</code></pre></div>
+      <div class="fix-box"><div class="label">Đề xuất sửa</div><pre><code>target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;</code></pre></div>
+    </article>
+    
+    </section>
+  </main>
+
+  <footer>
+    Báo cáo được tạo từ file HTML nguồn do người dùng cung cấp.
+  </footer>
+</body>
+</html>
