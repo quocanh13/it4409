@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quản lý người dùng</title>
+
+  <!-- BƯỚC 1: React, ReactDOM, Babel qua CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- BƯỚC 8: CSS giao diện + modal -->
+  <style>
+    body { font-family: "Times New Roman", serif; margin: 16px; }
+    .container { border: 1px solid #4a7fd4; padding: 8px 12px 16px; }
+    h1 { margin: 4px 0 10px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 8px; font-size: 14px; }
+    th, td { text-align: left; padding: 3px 8px; vertical-align: top; }
+    th { border-bottom: 1px solid #ccc; }
+    .toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
+    .toolbar input { width: 240px; padding: 3px 6px; }
+    td button { margin-right: 4px; }
+    .empty { padding: 12px 8px; color: #666; }
+
+    /* Modal Overlay */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 999;
+    }
+    /* Modal Content */
+    .modal-content {
+      background: #fff; padding: 12px 16px; border-radius: 6px; width: 320px;
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal-content h4 { margin: 0 0 8px; }
+    .field { display: flex; flex-direction: column; margin-bottom: 8px; }
+    .field label { font-size: 13px; margin-bottom: 2px; }
+    .field input { padding: 4px 6px; }
+    .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- BƯỚC 1.3: mã React trong thẻ text/babel -->
+  <script type="text/babel">
+
+    // ================= BƯỚC 3: SearchForm =================
+    function SearchForm({ onChangeValue }) {
+      return (
+        <input
+          type="text"
+          placeholder="Tìm theo name, username"
+          onChange={(e) => onChangeValue(e.target.value)}
+        />
+      );
+    }
+
+    // ================= BƯỚC 5: AddUser =================
+    const emptyUser = {
+      name: "", username: "", email: "",
+      address: { street: "", suite: "", city: "" },
+      phone: "", website: ""
+    };
+
+    function AddUser({ onAdd }) {
+      const [adding, setAdding] = React.useState(false);
+      const [user, setUser] = React.useState(emptyUser);
+
+      // Xử lý thuộc tính lồng (address) bằng Spread Operator
+      const handleChange = (e) => {
+        const { id, value } = e.target;
+        if (["street", "suite", "city"].includes(id)) {
+          setUser({ ...user, address: { ...user.address, [id]: value } });
+        } else {
+          setUser({ ...user, [id]: value });
+        }
+      };
+
+      const handleAdd = () => {
+        if (user.name.trim() === "" || user.username.trim() === "") {
+          alert("Vui lòng nhập Name và Username!");
+          return;
+        }
+        onAdd(user); // gửi dữ liệu lên App
+        setUser({ ...emptyUser, address: { ...emptyUser.address } });
+        setAdding(false);
+      };
+
+      const handleCancel = () => {
+        setUser({ ...emptyUser, address: { ...emptyUser.address } });
+        setAdding(false);
+      };
+
+      return (
+        <div>
+          <button onClick={() => setAdding(true)}>Thêm</button>
+          {adding && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+                <h4>Thêm người dùng</h4>
+
+                <div className="field">
+                  <label htmlFor="name">Name:</label>
+                  <input id="name" type="text" value={user.name} onChange={handleChange} />
+                </div>
+                <div className="field">
+                  <label htmlFor="username">Username:</label>
+                  <input id="username" type="text" value={user.username} onChange={handleChange} />
+                </div>
+                <div className="field">
+                  <label htmlFor="email">Email:</label>
+                  <input id="email" type="text" value={user.email} onChange={handleChange} />
+                </div>
+                <div className="field">
+                  <label htmlFor="street">Street:</label>
+                  <input id="street" type="text" value={user.address.street} onChange={handleChange} />
+                </div>
+                <div className="field">
+                  <label htmlFor="suite">Suite:</label>
+                  <input id="suite" type="text" value={user.address.suite} onChange={handleChange} />
+                </div>
+                <div className="field">
+                  <label htmlFor="city">City:</label>
+                  <input id="city" type="text" value={user.address.city} onChange={handleChange} />
+                </div>
+                <div className="field">
+                  <label htmlFor="phone">Phone:</label>
+                  <input id="phone" type="text" value={user.phone} onChange={handleChange} />
+                </div>
+
+                <div className="actions">
+                  <button onClick={handleAdd}>Thêm</button>
+                  <button onClick={() => handleCancel()}>Hủy</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ================= BƯỚC 4, 5, 6, 7: ResultTable =================
+    function ResultTable({ keyword, user, onAdded }) {
+      const [users, setUsers] = React.useState([]);
+      const [loading, setLoading] = React.useState(true);
+      const [editing, setEditing] = React.useState(null); // BƯỚC 6
+
+      // BƯỚC 4: tải dữ liệu 1 lần khi component mount
+      React.useEffect(() => {
+        fetch("https://jsonplaceholder.typicode.com/users")
+          .then((res) => res.json())
+          .then((data) => { setUsers(data); setLoading(false); })
+          .catch(() => setLoading(false));
+      }, []);
+
+      // BƯỚC 5: khi prop user thay đổi -> thêm vào danh sách
+      React.useEffect(() => {
+        if (user) {
+          setUsers((prev) => {
+            const nextId = prev.length ? Math.max(...prev.map((u) => u.id)) + 1 : 1;
+            return [...prev, { ...user, id: nextId }];
+          });
+          onAdded();
+        }
+      }, [user]);
+
+      // BƯỚC 4: lọc danh sách theo keyword
+      const filteredUsers = users.filter(
+        (u) =>
+          u.name.toLowerCase().includes(keyword.toLowerCase()) ||
+          u.username.toLowerCase().includes(keyword.toLowerCase())
+      );
+
+      // BƯỚC 6: Sửa - deep copy user (kể cả address) sang state editing
+      function editUser(u) {
+        setEditing({ ...u, address: { ...u.address } });
+      }
+
+      function handleEditChange(field, value) {
+        if (["street", "suite", "city"].includes(field)) {
+          setEditing({ ...editing, address: { ...editing.address, [field]: value } });
+        } else {
+          setEditing({ ...editing, [field]: value });
+        }
+      }
+
+      function saveUser() {
+        if (editing.name.trim() === "" || editing.username.trim() === "") {
+          alert("Vui lòng nhập Name và Username!");
+          return;
+        }
+        setUsers((prev) => prev.map((u) => (u.id === editing.id ? editing : u)));
+        setEditing(null);
+      }
+
+      // BƯỚC 7: Xóa - dùng filter tạo mảng mới
+      function removeUser(id) {
+        setUsers((prev) => prev.filter((u) => u.id !== id));
+      }
+
+      if (loading) return <p>Đang tải dữ liệu...</p>;
+
+      return (
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Họ tên</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Địa chỉ</th>
+                <th>Số điện thoại</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredUsers.map((u) => (
+                <tr key={u.id}>
+                  <td>{u.id}</td>
+                  <td>{u.name}</td>
+                  <td>{u.username}</td>
+                  <td>{u.email}</td>
+                  <td>
+                    {u.address.street}, {u.address.suite}, {u.address.city}
+                  </td>
+                  <td>{u.phone}</td>
+                  <td>
+                    <button onClick={() => editUser(u)}>Sửa</button>
+                    <button className="btn-delete" onClick={() => removeUser(u.id)}>Xóa</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {filteredUsers.length === 0 && (
+            <div className="empty">Không có người dùng nào khớp với từ khóa.</div>
+          )}
+
+          {/* Modal sửa người dùng */}
+          {editing && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+                <h4>Sửa người dùng #{editing.id}</h4>
+
+                <div className="field">
+                  <label htmlFor="e-name">Name</label>
+                  <input id="e-name" type="text" value={editing.name}
+                    onChange={(e) => handleEditChange("name", e.target.value)} />
+                </div>
+                <div className="field">
+                  <label htmlFor="e-username">Username</label>
+                  <input id="e-username" type="text" value={editing.username}
+                    onChange={(e) => handleEditChange("username", e.target.value)} />
+                </div>
+                <div className="field">
+                  <label htmlFor="e-email">Email</label>
+                  <input id="e-email" type="text" value={editing.email}
+                    onChange={(e) => handleEditChange("email", e.target.value)} />
+                </div>
+                <div className="field">
+                  <label htmlFor="e-street">Street</label>
+                  <input id="e-street" type="text" value={editing.address.street}
+                    onChange={(e) => handleEditChange("street", e.target.value)} />
+                </div>
+                <div className="field">
+                  <label htmlFor="e-suite">Suite</label>
+                  <input id="e-suite" type="text" value={editing.address.suite}
+                    onChange={(e) => handleEditChange("suite", e.target.value)} />
+                </div>
+                <div className="field">
+                  <label htmlFor="e-city">City</label>
+                  <input id="e-city" type="text" value={editing.address.city}
+                    onChange={(e) => handleEditChange("city", e.target.value)} />
+                </div>
+                <div className="field">
+                  <label htmlFor="e-phone">Phone</label>
+                  <input id="e-phone" type="text" value={editing.phone}
+                    onChange={(e) => handleEditChange("phone", e.target.value)} />
+                </div>
+
+                <div className="actions">
+                  <button onClick={saveUser}>Lưu</button>
+                  <button onClick={() => setEditing(null)}>Hủy</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ================= BƯỚC 2: App - quản lý state tập trung =================
+    function App() {
+      const [kw, setKeyword] = React.useState("");
+      const [newUser, setNewUser] = React.useState(null);
+
+      return (
+        <div className="container">
+          <h1>Quản lý người dùng</h1>
+          <div className="toolbar">
+            <SearchForm onChangeValue={setKeyword} />
+            <AddUser onAdd={setNewUser} />
+          </div>
+          <ResultTable keyword={kw} user={newUser} onAdded={() => setNewUser(null)} />
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+</html>
